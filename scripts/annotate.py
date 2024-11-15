@@ -28,7 +28,7 @@ def make_annotation(image_path, labels):
     return out, True
 
 parser = argparse.ArgumentParser(
-                    prog='SplitMaker',
+                    prog='Annotater3000',
                     description='Makes splCreateit with train and validation images using provided percentage of validation and using  a given fraction of the dataset (full set by default)',
                     epilog='Fuck You')
 

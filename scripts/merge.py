@@ -1,13 +1,13 @@
 import os
 import rasterio
 import numpy as np
+import argparse
 
-# Where the images are  
-dir = '/data'
-# Where to save the images merged
-out = '/data_out'
-# channels to keep
-channels = [1,1,0,0,1]
+
+SWISS_IMAGE_FOLDER = "swissImage_50cm_patches"
+SWISS_SURFACE3D_FOLDER = "swissSURFACE3D_patches"
+SWISS_SURFACE3D_HILLSHADE_FOLDER = "swissSURFACE3D_hillshade_patches"
+
 
 def merge(rgb_folder, dsm_folder, hillshade_folder, output_folder, channels):
     """
@@ -39,6 +39,8 @@ def merge(rgb_folder, dsm_folder, hillshade_folder, output_folder, channels):
             dsm_data = src_dsm.read(1)  # DSM is assumed to be single-channel
         with rasterio.open(hillshade_path) as src_hillshade:
             hillshade_data = src_hillshade.read(1)  # Hillshade is assumed to be single-channel
+
+        print(rgb_data.shape)
 
         # Prepare the output array
         merged_image = np.zeros((3, rgb_data.shape[1], rgb_data.shape[2]), dtype=np.float32)
@@ -73,13 +75,26 @@ def merge(rgb_folder, dsm_folder, hillshade_folder, output_folder, channels):
 
         print(f"Merged image saved to {output_path}")
 
+
+parser = argparse.ArgumentParser(description='Merge RGB, DSM, and Hillshade images into a single 3-channel image.')
+
+parser.add_argument('input', type=str,)
+parser.add_argument('output', type=str,)
+parser.add_argument('channels', type=str, nargs=5)
+
+args = parser.parse_args()
+
+# Where the images are  
+dir = args.input
+# Where to save the images merged
+out = args.output
+# channels to keep
+print(args.channels)
+channels = args.channels
+
 # Example usage
-rgb_folder = r"C:\Users\matth\Documents\IPEO\LargeRocksDetectionDataset\swissImage_50cm_patches"
-dsm_folder = r"C:\Users\matth\Documents\IPEO\LargeRocksDetectionDataset\swissSURFACE3D_patches"
-hillshade_folder = r"C:\Users\matth\Documents\IPEO\LargeRocksDetectionDataset\swissSURFACE3D_hillshade_patches"
-output_folder = r"C:\Users\matth\Documents\IPEO\merged_images"
+rgb_folder = f"{dir}\{SWISS_IMAGE_FOLDER}"
+dsm_folder = f"{dir}\{SWISS_SURFACE3D_FOLDER}"
+hillshade_folder = f"{dir}\{SWISS_SURFACE3D_HILLSHADE_FOLDER}"
 
-# Specify channels in the order you want (e.g., Red from RGB, Green from RGB, and Hillshade)
-channels = ['r', 'g', 'b']
-
-merge(rgb_folder, dsm_folder, hillshade_folder, output_folder, channels)
+merge(rgb_folder, dsm_folder, hillshade_folder, out, channels)

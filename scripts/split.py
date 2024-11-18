@@ -1,10 +1,7 @@
-import numpy as np
 import os
 import shutil
-import json
 import argparse
 import random
-import sys
 
 # Create command line parser
 parser = argparse.ArgumentParser(

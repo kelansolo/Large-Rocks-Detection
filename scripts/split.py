@@ -6,7 +6,7 @@ import random
 # Create command line parser
 parser = argparse.ArgumentParser(
                     prog='SplitMaker',
-                    description='Makes split with train, validation and test images using provided a given fraction of the dataset (full set by default)',
+                    description='Randomly split the given dataset into train, validation and test datasets using provided fractions of the dataset (full set by default). The sum of the fractions can be less or equal than 1 but not greater',
                     epilog='---')
 
 

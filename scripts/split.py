@@ -12,15 +12,10 @@ parser = argparse.ArgumentParser(
 
 parser.add_argument('input_dir', type=str)
 parser.add_argument('output_dir', type=str)
-parser.add_argument('-f', '--fractions', default= [0.6,0.2,0.2], type=float,  nargs=3)
-parser.add_argument('-s', '--size', default= 0, type=int)
+parser.add_argument('-f', '--fractions', default= [0.6,0.2,0.2], type=float,  nargs=3, help = 'Order of fractions : train validation test. Defult is 0.6 0.2 0.2. Sum of the 3 can not be larger than 1')
+parser.add_argument('-s', '--size', default= 0, type=int, help = 'How many images to take (e.x. if you want to test the pipeline on 10 images). \n Default is *all*')
 
-args = parser.parse_args()
 
-fract = args.fractions
-dataset_size = args.size
-input_dir = args.input_dir
-output_dir = args.output_dir
 
 def files_empty(output_dir):
     for root, _, files in os.walk(output_dir):
@@ -50,17 +45,13 @@ def split(input_dir, output_dir, fract, dataset_size):
     # Shuffle the list of image filenames
     random.seed(42)
     random.shuffle(files)
-    if dataset_size != 0:
-        files = files[0:dataset_size]
 
-    # determine the number of images for each set
     train_size = int(len(files) * fract[0])
     val_size = int(len(files) * fract[1])
     test_size = int(len(files) * fract[2])
-    # print("--- Split debug ---")
-    # print("Train size: {}".format(train_size))
-    # print("Validation size: {}".format(val_size))
-    # print("Test size: {}".format(test_size))    
+
+    if dataset_size != 0:
+        files = files[0:dataset_size]
 
     for i, f in enumerate(files):
         if i < train_size:
@@ -82,7 +73,12 @@ def split(input_dir, output_dir, fract, dataset_size):
     return train_size, val_size, test_size
 
 def main():
-    global input_dir, output_dir, fract, dataset_size
+    args = parser.parse_args()
+    fract = args.fractions
+    dataset_size = args.size
+    input_dir = args.input_dir
+    output_dir = args.output_dir
+
     if fract[0]+fract[1]+fract[2] > 1:
         print("Sum of fractiions can't be larger than 1")
     else:

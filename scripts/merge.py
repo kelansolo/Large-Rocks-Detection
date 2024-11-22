@@ -86,8 +86,15 @@ parser.add_argument("-c", "--channels", type=int, nargs=5, required=True)
 
 args = parser.parse_args()
 
-rgb_folder = args.rgb_folder,
-dsm_folder = args.dsm_folder,
-hillshade_folder = args.hillshade_folder,
-output_folder = args.output_folder,
+rgb_folder = args.rgb_folder
+dsm_folder = args.dsm_folder
+hillshade_folder = args.hillshade_folder
+output_folder = args.output_folder
 channels = args.channels
+
+rgb_folder = os.path.normpath(rgb_folder)
+dsm_folder = os.path.normpath(dsm_folder)
+hillshade_folder = os.path.normpath(hillshade_folder)
+output_folder = os.path.normpath(output_folder)
+
+merge(rgb_folder, dsm_folder, hillshade_folder, output_folder, channels)

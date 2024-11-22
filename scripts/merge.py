@@ -1,13 +1,7 @@
 import os
 import rasterio
 import numpy as np
-
-# Where the images are  
-dir = '/data'
-# Where to save the images merged
-out = '/data_out'
-# channels to keep
-channels = [1,1,0,0,1]
+import matplotlib.pyplot as plt
 
 def merge(rgb_folder, dsm_folder, hillshade_folder, output_folder, channels):
     """
@@ -71,9 +65,9 @@ def merge(rgb_folder, dsm_folder, hillshade_folder, output_folder, channels):
         ) as dst:
             dst.write(merged_image)
 
-        print(f"Merged image saved to {output_path}")
 
-# Example usage
+
+### Example usage ###
 rgb_folder = r"C:\Users\matth\Documents\IPEO\LargeRocksDetectionDataset\swissImage_50cm_patches"
 dsm_folder = r"C:\Users\matth\Documents\IPEO\LargeRocksDetectionDataset\swissSURFACE3D_patches"
 hillshade_folder = r"C:\Users\matth\Documents\IPEO\LargeRocksDetectionDataset\swissSURFACE3D_hillshade_patches"
@@ -83,3 +77,21 @@ output_folder = r"C:\Users\matth\Documents\IPEO\merged_images"
 channels = ['r', 'g', 'b']
 
 merge(rgb_folder, dsm_folder, hillshade_folder, output_folder, channels)
+
+# List all files in the folder and sort them
+merged_files = sorted([f for f in os.listdir(output_folder) if f.endswith('.tif')])
+
+# Display the first 3 images
+for i, file_name in enumerate(merged_files[:3]):
+    image_path = os.path.join(output_folder, file_name)
+    with rasterio.open(image_path) as src:
+        image_data = src.read()
+    
+    # Transpose the array for visualization if needed (channels last)
+    image_data = np.transpose(image_data, (1, 2, 0))
+    
+    plt.figure(figsize=(8, 8))
+    plt.imshow(image_data / np.max(image_data))  # Normalize for visualization
+    plt.title(f"Image: {file_name}")
+    plt.axis('off')
+    plt.show()

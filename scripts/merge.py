@@ -1,6 +1,7 @@
 import os
 import numpy as np
 import rasterio
+import argparse
 
 def merge(rgb_folder, dsm_folder, hillshade_folder, output_folder, channels):
     """
@@ -14,8 +15,6 @@ def merge(rgb_folder, dsm_folder, hillshade_folder, output_folder, channels):
         channels (list): List of 5 integers (1 or 0) specifying whether to use 'r', 'g', 'b', 'dsm', 'hillshade' respectively.
                          At least 3 channels must be selected.
     """
-    if sum(channels) != 3:
-        raise ValueError("Exactly 3 channels must be selected (sum of 'channels' must be 3).")
     
     # Ensure the output directory exists
     os.makedirs(output_folder, exist_ok=True)
@@ -73,3 +72,22 @@ def merge(rgb_folder, dsm_folder, hillshade_folder, output_folder, channels):
             transform=src_rgb.transform
         ) as dst:
             dst.write(merged_image)
+
+parser = argparse.ArgumentParser(
+    prog = "MergeMachine",
+    description = "reads images (rgb, dsm, hillshade), splits rgb images into 3 channels and merges 3 new channels of choice",
+    epilog = "what a nice function!")
+
+parser.add_argument("rgb_folder", type=str)
+parser.add_argument("dsm_folder", type=str)
+parser.add_argument("hillshade_folder", type=str)
+parser.add_argument("output_folder", type=str)
+parser.add_argument("-c", "--channels", type=int, nargs=5, required=True)
+
+args = parser.parse_args()
+
+rgb_folder = args.rgb_folder,
+dsm_folder = args.dsm_folder,
+hillshade_folder = args.hillshade_folder,
+output_folder = args.output_folder,
+channels = args.channels

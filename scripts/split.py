@@ -32,9 +32,9 @@ def format_dirs(input_dir,output_dir): #Format directories
     output_dir = os.path.normpath(output_dir)
 
     # Create the directories
-    os.makedirs(output_dir + "/train/images", exist_ok=False)
-    os.makedirs(output_dir + "/val/images", exist_ok=False)
-    os.makedirs(output_dir + "/test/images", exist_ok=False)
+    os.makedirs(os.path.join(output_dir,  "train", "images") exist_ok=False)
+    os.makedirs(os.path.join(output_dir, "val", "images"), exist_ok=False)
+    os.makedirs(os.path.join(output_dir, "test", "images"), exist_ok=False)
 
     return input_dir,output_dir
 

@@ -28,10 +28,8 @@ def files_empty(output_dir):
 
 
 def format_dirs(input_dir,output_dir): #Format directories
-    if input_dir[-1] != "/":
-        input_dir = input_dir + "/"
-    if output_dir[-1] != "/":
-        output_dir = output_dir + "/"
+    input_dir = os.path.normpath(input_dir)
+    output_dir = os.path.normpath(output_dir)
 
     # Create the directories
     os.makedirs(output_dir + "/train/images", exist_ok=False)

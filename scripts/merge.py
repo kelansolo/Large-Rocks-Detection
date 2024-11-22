@@ -1,7 +1,6 @@
 import os
-import rasterio
 import numpy as np
-import matplotlib.pyplot as plt
+import rasterio
 
 def merge(rgb_folder, dsm_folder, hillshade_folder, output_folder, channels):
     """
@@ -12,13 +11,23 @@ def merge(rgb_folder, dsm_folder, hillshade_folder, output_folder, channels):
         dsm_folder (str): Path to the folder containing DSM images.
         hillshade_folder (str): Path to the folder containing hillshade images.
         output_folder (str): Path to the folder to save the merged images.
-        channels (list): List of 3 strings specifying the source for each channel ('r', 'g', 'b', 'dsm', 'hillshade').
+        channels (list): List of 5 integers (1 or 0) specifying whether to use 'r', 'g', 'b', 'dsm', 'hillshade' respectively.
+                         At least 3 channels must be selected.
     """
+    if sum(channels) != 3:
+        raise ValueError("Exactly 3 channels must be selected (sum of 'channels' must be 3).")
+    
     # Ensure the output directory exists
     os.makedirs(output_folder, exist_ok=True)
 
     # List all files in the RGB folder
     file_names = [f for f in os.listdir(rgb_folder) if f.endswith('.tif')]
+
+    # Map channel indices to their respective names
+    channel_names = ['r', 'g', 'b', 'dsm', 'hillshade']
+
+    # Get the selected channels from the binary list
+    selected_channels = [channel_names[i] for i, use in enumerate(channels) if use]
 
     for file_name in file_names:
         # Paths to corresponding files in each folder
@@ -46,8 +55,8 @@ def merge(rgb_folder, dsm_folder, hillshade_folder, output_folder, channels):
             'hillshade': hillshade_data
         }
 
-        # Populate the merged image with specified channels
-        for i, channel in enumerate(channels):
+        # Populate the merged image with the selected channels
+        for i, channel in enumerate(selected_channels):
             merged_image[i] = channel_map[channel]
 
         # Save the merged image
@@ -64,34 +73,3 @@ def merge(rgb_folder, dsm_folder, hillshade_folder, output_folder, channels):
             transform=src_rgb.transform
         ) as dst:
             dst.write(merged_image)
-
-
-
-### Example usage ###
-rgb_folder = r"C:\Users\matth\Documents\IPEO\LargeRocksDetectionDataset\swissImage_50cm_patches"
-dsm_folder = r"C:\Users\matth\Documents\IPEO\LargeRocksDetectionDataset\swissSURFACE3D_patches"
-hillshade_folder = r"C:\Users\matth\Documents\IPEO\LargeRocksDetectionDataset\swissSURFACE3D_hillshade_patches"
-output_folder = r"C:\Users\matth\Documents\IPEO\merged_images"
-
-# Specify channels in the order you want (e.g., Red from RGB, Green from RGB, and Hillshade)
-channels = ['r', 'g', 'b']
-
-merge(rgb_folder, dsm_folder, hillshade_folder, output_folder, channels)
-
-# List all files in the folder and sort them
-merged_files = sorted([f for f in os.listdir(output_folder) if f.endswith('.tif')])
-
-# Display the first 3 images
-for i, file_name in enumerate(merged_files[:3]):
-    image_path = os.path.join(output_folder, file_name)
-    with rasterio.open(image_path) as src:
-        image_data = src.read()
-    
-    # Transpose the array for visualization if needed (channels last)
-    image_data = np.transpose(image_data, (1, 2, 0))
-    
-    plt.figure(figsize=(8, 8))
-    plt.imshow(image_data / np.max(image_data))  # Normalize for visualization
-    plt.title(f"Image: {file_name}")
-    plt.axis('off')
-    plt.show()

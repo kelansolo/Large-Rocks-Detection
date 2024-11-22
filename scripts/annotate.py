@@ -10,8 +10,6 @@ def get_annotation(labels, file):
     return None, False
 
 def make_annotation(image_path, labels):
-    name = image_path.split('.')[0]
-
     annotations, found = get_annotation(labels, image_path)
     if not found:
         print(f"Could not find annotation for image {image_path}")
@@ -29,10 +27,10 @@ def make_annotation(image_path, labels):
 
 parser = argparse.ArgumentParser(
                     prog='Annotater3000',
-                    description='Makes splCreateit with train and validation images using provided percentage of validation and using  a given fraction of the dataset (full set by default)',
+                    description='Annotates the images with the provided labels',
                     epilog='Fuck You')
 
-parser.add_argument('input_dir', type=str)
+parser.add_argument('input_dir', type=str, help="The input directory should contain a directory named 'images' inside")
 parser.add_argument('labels_file', type=str)
 
 args = parser.parse_args()
@@ -40,15 +38,17 @@ args = parser.parse_args()
 input_dir = args.input_dir
 labels_file = args.labels_file
 
-if input_dir[-1] != '/':
-    input_dir += '/'
+input_dir = os.path.normpath(input_dir)
 
+
+images_dir = os.path.join(input_dir, "images")
+labels_dir = os.path.join(input_dir, "labels")
 
 # Check that the input path is a folder
 assert os.path.isdir(input_dir), "Input dir should be a folder. It should contain a folder 'images' inside with the images"
 
 # Check that the input path has a "image" folder inside
-assert os.path.exists(input_dir+"images/"), "Input dir should contains an 'image' direction inside of it"
+assert os.path.exists(images_dir), f"Input dir should contains an 'image' direction inside of it. {images_dir} doens't exist"
 
 # Check the labels file is a file and a json file
 assert os.path.isfile(labels_file), f"Provided labels file should be a file. Got  {labels_file}"
@@ -58,13 +58,13 @@ with open(labels_file, 'r') as f:
     labels = json.load(f)
 
 # Create the output folder for the labels
-labels_dir = input_dir + "labels/"
+
 os.makedirs(labels_dir, exist_ok=True)
 
 # Iterate through all the images and create the annotation file
-images_path = input_dir + "images/"
 
-images = os.listdir(images_path)
+
+images = os.listdir(images_dir)
 succ = 0
 tot = len(images)
 
@@ -77,7 +77,9 @@ for image_path in images:
         continue
 
     image_name = image_path.split(".")[0]
-    with open(labels_dir + image_name + ".txt", 'w') as f:
+
+    lbl_path = os.path.join(labels_dir, f'{image_name}.txt')
+    with open(lbl_path, 'w') as f:
         f.write(annotations)
         succ += 1
 

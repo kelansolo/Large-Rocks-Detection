@@ -9,7 +9,9 @@ def get_annotation(labels, file):
     
     return None, False
 
-def make_annotation(image_path, labels):
+def make_annotation(image_path, labels,  box_width_pix=10):
+    width = 640 / box_width_pix # default value is 10pix i.e. 5x5m
+    c = 0 # All object are of the same class i.e.
     annotations, found = get_annotation(labels, image_path)
     if not found:
         print(f"Could not find annotation for image {image_path}")
@@ -17,9 +19,7 @@ def make_annotation(image_path, labels):
 
     out = ""
     for annotation in annotations:
-        c = 0 # Class, hardcoded to 0 because we only have one class
         center_x, center_y = annotation['relative_within_patch_location']
-        width = 0.0015 # Width is hardcoded to 0.0015 -> 10 pixels, this is the same for the height
 
         out += f"{c} {center_x} {center_y} {width} {width}\n"
 
@@ -84,10 +84,3 @@ for image_path in images:
         succ += 1
 
 print(f"Successfully created {succ}/{tot} annotations")
-
-
-
-
-
-
-

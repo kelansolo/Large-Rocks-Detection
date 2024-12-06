@@ -30,7 +30,7 @@ parser = argparse.ArgumentParser(
                     description='Annotates the images with the provided labels',
                     epilog='Fuck You')
 
-parser.add_argument('input_dir', type=str, help="The input directory should contain a directory named 'images' inside")
+parser.add_argument('input_dir', type=str, help="The input directory should contain the images directly inside")
 parser.add_argument('labels_file', type=str)
 
 args = parser.parse_args()
@@ -41,14 +41,9 @@ labels_file = args.labels_file
 input_dir = os.path.normpath(input_dir)
 
 
-images_dir = os.path.join(input_dir, "images")
-labels_dir = os.path.join(input_dir, "labels")
-
 # Check that the input path is a folder
 assert os.path.isdir(input_dir), "Input dir should be a folder. It should contain a folder 'images' inside with the images"
 
-# Check that the input path has a "image" folder inside
-assert os.path.exists(images_dir), f"Input dir should contains an 'image' direction inside of it. {images_dir} doens't exist"
 
 # Check the labels file is a file and a json file
 assert os.path.isfile(labels_file), f"Provided labels file should be a file. Got  {labels_file}"
@@ -57,14 +52,8 @@ assert os.path.isfile(labels_file), f"Provided labels file should be a file. Got
 with open(labels_file, 'r') as f:
     labels = json.load(f)
 
-# Create the output folder for the labels
-
-os.makedirs(labels_dir, exist_ok=True)
-
 # Iterate through all the images and create the annotation file
-
-
-images = os.listdir(images_dir)
+images = os.listdir(input_dir)
 succ = 0
 tot = len(images)
 
@@ -78,7 +67,7 @@ for image_path in images:
 
     image_name = image_path.split(".")[0]
 
-    lbl_path = os.path.join(labels_dir, f'{image_name}.txt')
+    lbl_path = os.path.join(input_dir, f'{image_name}.txt')
     with open(lbl_path, 'w') as f:
         f.write(annotations)
         succ += 1

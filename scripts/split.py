@@ -21,9 +21,9 @@ def format_dirs(input_dir,output_dir): #Format directories
     output_dir = os.path.normpath(output_dir)
 
     # Create the directories
-    os.makedirs(os.path.join(output_dir,  "train", "images"), exist_ok=False)
-    os.makedirs(os.path.join(output_dir, "val", "images"), exist_ok=False)
-    os.makedirs(os.path.join(output_dir, "test", "images"), exist_ok=False)
+    os.makedirs(os.path.join(output_dir, "train"), exist_ok=False)
+    os.makedirs(os.path.join(output_dir,   "val"), exist_ok=False)
+    os.makedirs(os.path.join(output_dir,  "test"), exist_ok=False)
 
     return input_dir,output_dir
 
@@ -50,13 +50,12 @@ def split(input_dir, output_dir, fract, dataset_size):
             dest_folder = "test"
         else:
             break
-        shutil.copy(os.path.join(input_dir, f), os.path.join(output_dir, os.path.join(dest_folder+"/images", f)))
-        
+        shutil.copy(os.path.join(input_dir, f), os.path.join(output_dir, dest_folder, f))        
 
     # get actual file sizes
-    test_size = len(os.listdir(os.path.join(output_dir, "test","images")))
-    train_size = len(os.listdir(os.path.join(output_dir, "train","images")))
-    val_size = len(os.listdir(os.path.join(output_dir, "val","images")))
+    test_size = len(os.listdir(os.path.join(output_dir, "test")))
+    train_size = len(os.listdir(os.path.join(output_dir, "train")))
+    val_size = len(os.listdir(os.path.join(output_dir, "val")))
 
     return train_size, val_size, test_size
 

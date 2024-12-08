@@ -10,7 +10,7 @@ def get_annotation(labels, file):
     return None, False
 
 def make_annotation(image_path, labels,  box_width_pix=10):
-    width = 640 / box_width_pix # default value is 10pix i.e. 5x5m
+    width = box_width_pix / 640 # default value is 10pix i.e. 5x5m
     c = 0 # All object are of the same class i.e.
     annotations, found = get_annotation(labels, image_path)
     if not found:
@@ -42,7 +42,7 @@ input_dir = os.path.normpath(input_dir)
 
 
 # Check that the input path is a folder
-assert os.path.isdir(input_dir), "Input dir should be a folder. It should contain a folder 'images' inside with the images"
+assert os.path.isdir(input_dir), f"Input dir {input_dir} should be a folder"
 
 
 # Check the labels file is a file and a json file

@@ -16,6 +16,7 @@ epochs = args.epochs
 output = args.output
 model_name = args.model
 
+print("Model used:", model_name)
 model = YOLO(model_name)
 
 results = model.train(

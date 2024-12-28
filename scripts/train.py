@@ -8,6 +8,8 @@ parser.add_argument('yaml', type=str, help="yaml file")
 parser.add_argument('epochs', type=int, help="Number of epochs")
 parser.add_argument('output', type=str, help="Name of the output directory")
 parser.add_argument('model', type=str, help="Model to use e.g. yolov8n.pt")
+parser.add_argument('lr', type=str, help="Model to use e.g. yolov8n.pt")
+parser.add_argument('-p', action='store_true', help="Model to use e.g. yolov8n.pt")
 
 args = parser.parse_args()
 
@@ -15,6 +17,8 @@ data = args.yaml
 epochs = args.epochs
 output = args.output
 model_name = args.model
+pt = args.p
+lr = float(args.lr)
 
 print("Model used:", model_name)
 model = YOLO(model_name)
@@ -26,6 +30,9 @@ results = model.train(
     augment=False, 
     crop_fraction=0.0,
     name=output,
+    pretrained=pt,
+    lr0=lr,
+    lrf=lr,
 )
 
 metrics = model.val()

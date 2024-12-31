@@ -32,11 +32,19 @@ parser = argparse.ArgumentParser(
 
 parser.add_argument('input_dir', type=str, help="The input directory should contain the images directly inside")
 parser.add_argument('labels_file', type=str)
+parser.add_argument(
+    '-r',  # The short option flag
+    metavar='<some_value>',  # Placeholder for the value in help messages
+    type=int,  # Type of the value expected
+    required=False,  # Set to True if the argument is mandatory
+    help='Provide a value for the -r option'
+)
 
 args = parser.parse_args()
 
 input_dir = args.input_dir
 labels_file = args.labels_file
+pix_width = int(args.r) if args.r else 10
 
 input_dir = os.path.normpath(input_dir)
 
@@ -59,7 +67,7 @@ tot = len(images)
 
 for image_path in images:
 
-    annotations, ok = make_annotation(image_path, labels)
+    annotations, ok = make_annotation(image_path, labels, pix_width)
 
     if not ok:
         print(f"Could not create annotation for image {image_path}")

@@ -7,7 +7,7 @@ parser = argparse.ArgumentParser(
 
 parser.add_argument('output', type=str, help="Name of the output directory")
 parser.add_argument('model', type=str, help="Model to use e.g. yolov8n.pt")
-parser.add_argument('-s', type=str, help="Where to save the results. Should point to a txt file")
+parser.add_argument('-s', metavar='<some_value>', type=str, help="Where to save the results. Should point to a txt file")
 
 args = parser.parse_args()
 
@@ -38,8 +38,7 @@ print(f"r {r:.6f}")
 # Save to folder if the argument to do so is given
 s = args.s
 if s:
-    assert os.path.isfile(s), f"The provided file to save should be a file, got {s}"
-    os.makedirs(s, exist_ok=True)
     with open(s, "w") as f:
-        f.write("        ,map50   ,map75   ,f1      ,f2      ,prec    ,recall  \n")
+        f.write("map5095 ,map50   ,map75   ,f1      ,f2      ,prec    ,recall  \n")
         f.write(f"{map5095:.6f},{map50:.6f},{map75:.6f},{f1:.6f},{f2:.6f},{p:.6f},{r:.6f}\n")
+        f.write(f"{map5095:.6f}&{map50:.6f}&{map75:.6f}&{f1:.6f}&{f2:.6f}&{p:.6f}&{r:.6f}\n")

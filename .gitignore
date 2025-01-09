@@ -3,3 +3,5 @@
 *.txt
 !requirements.txt
 .venv
+*.pt
+*.zip

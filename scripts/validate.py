@@ -8,6 +8,7 @@ parser = argparse.ArgumentParser(
 parser.add_argument('output', type=str, help="Name of the output directory")
 parser.add_argument('model', type=str, help="Model to use e.g. yolov8n.pt")
 parser.add_argument('-s', metavar='<some_value>', type=str, help="Where to save the results. Should point to a txt file")
+parser.add_argument('-t', action='store_true', help="Where to save the results. Should point to a txt file")
 
 args = parser.parse_args()
 
@@ -17,7 +18,10 @@ model_name = args.model
 print("Model used:", model_name)
 model = YOLO(model_name)
 
-metrics = model.val(name=output)
+spl = "test" if args.t else "val"
+
+print(f"Running validation on {spl} split...")
+metrics = model.val(name=output, split=spl)
 
 map5095 = metrics.box.map
 map50 = metrics.box.map50

@@ -3,3 +3,8 @@
 *.txt
 !requirements.txt
 .venv
+!/rendu/*
+/1000e_30x30
+yolov8
+*.pt
+Large-Rocks-Detection.code-workspace

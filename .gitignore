@@ -8,3 +8,4 @@
 yolov8
 *.pt
 Large-Rocks-Detection.code-workspace
+*.zip

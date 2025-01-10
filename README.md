@@ -11,6 +11,7 @@ Automates rock detection in swisstopo imagery using:
 
 ## Dataset
 
+- ~1000 Aerial images
 - 4,354 rock annotations
 - 640x640 pixel images
 - Three image types:
